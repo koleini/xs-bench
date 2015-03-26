@@ -147,6 +147,7 @@ def main(url, username, password, smpl_time, smpl_intv):
         if not os.path.exists('result/' + uuid):
             os.makedirs(os.path.join("result", uuid))
         for param in rrd_updates.get_vm_param_list(uuid):
+            print param
             if not (("cpu" in param) or ("rx" in param) or ("tx" in param) or ("eth0" in param)):
                 continue
             path = 'result/' + uuid
@@ -174,7 +175,10 @@ def main(url, username, password, smpl_time, smpl_intv):
                     if row == 0:
                         data = "" #fdata[0]
                     else:
-                        data = data + fdata[row].rstrip() + " %.2f\n" % rrd_updates.get_vm_data(uuid,param,row)
+                        try:
+                            data = data + fdata[row].rstrip() + " %.2f\n" % rrd_updates.get_vm_data(uuid,param,row)
+                        except IndexError:
+                            data = data
                 f.write(data)
 
             f.close()
